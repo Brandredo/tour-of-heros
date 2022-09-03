@@ -1,21 +1,33 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+
 import { Hero } from '../hero';
-import { HEROES } from '../mock-heros';
+import { HeroService } from '../hero.service';
+import { MessageService } from '../message.service';
 
 @Component({
-  selector: 'app-heros',
+  selector: 'app-heroes',
   templateUrl: './heros.component.html',
-  styleUrls: ['./heros.component.css'],
+  styleUrls: ['./heros.component.css']
 })
-export class HerosComponent implements OnInit {
-  heroes = HEROES;
+export class HeroesComponent implements OnInit {
+
   selectedHero?: Hero;
 
-  constructor() {}
+  heroes: Hero[] = [];
 
-  ngOnInit(): void {}
+  constructor(private heroService: HeroService, private messageService: MessageService) { }
 
-  onSelect(hero: Hero) {
+  ngOnInit(): void {
+    this.getHeroes();
+  }
+
+  onSelect(hero: Hero): void {
     this.selectedHero = hero;
+    this.messageService.add(`HeroesComponent: Selected hero id=${hero.id}`);
+  }
+
+  getHeroes(): void {
+    this.heroService.getHeroes()
+        .subscribe(heroes => this.heroes = heroes);
   }
 }
